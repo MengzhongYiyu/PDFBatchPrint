@@ -1,0 +1,19 @@
+# 开发用 Python 运行时（约 106MB，从 dist 便携包里解出来的，不入库）
+# 需要时：解压 dist\PDF批量打印工具_便携版_v1.4.zip 后把 python\ 拷到项目根目录
+/python/
+
+# 编译产物（build.cmd 生成，2 秒可重建，故不入库）
+/PdfBatchPrint.exe
+
+# 打包产物（可随时用 make_portable.cmd 重新生成）
+/dist/
+
+# 运行时/测试临时目录
+/temp/
+/_selftest/
+__pycache__/
+*.pyc
+
+# 编辑器
+.vs/
+*.user
