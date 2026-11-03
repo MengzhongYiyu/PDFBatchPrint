@@ -198,3 +198,46 @@ git push -u origin main
 - [ ] （你）生成 PAT 并勾选 `repo`
 - [ ] （你）双击 `发布到GitHub.cmd` 并输入用户名 + 令牌
 - [ ] （你）打开仓库首页确认 README 和截图正常
+
+---
+
+## 10. 便携包怎么放上去（用 Releases，不要塞进 Git）
+
+**为什么不直接 `git add` 那个 41MB 的 zip：** Git 会把每个版本的二进制永久写进历史，
+发 5 个版仓库就 200MB+，别人 `git clone` 会非常慢。GitHub 为此提供了 **Releases**：
+附件单独存放、不限 100MB 单文件（上限 2GB）、有固定下载链接、还能写发布说明。
+
+### 方式 A：双击脚本（推荐，本机已备好）
+
+双击 `发布便携包到Release.cmd` → 输入 GitHub 用户名 + 令牌（和推送用的是同一个 PAT）→ 等上传完。
+脚本会：
+- 用 `dist\PDF批量打印工具_便携版_v1.4.1.zip`，算 SHA256；
+- 创建 tag `v1.4.1` 的 Release，写好用中文的发布说明；
+- 把附件以上传名 `PDFBatchPrint_v1.4.1_portable.zip`（ASCII，链接更友好）挂上去；
+- 打印最终下载地址。
+
+> 41MB 上传需要 1~5 分钟，取决于网络。失败就重跑（会往同一个 Release 追加上传，不会重复建 tag）。
+
+### 方式 B：网页点四下
+
+1. 打开 <https://github.com/MengzhongYiyu/PDFBatchPrint/releases/new>
+2. **Choose a tag** 输入 `v1.4.1` → 点 **Create new tag on publish**
+3. **Release title**：`v1.4.1 便携版（免装 Python，解压即用）`；说明可从 `发布便携包到Release.cmd` 里那段中文复制
+4. 把 `dist\PDF批量打印工具_便携版_v1.4.1.zip` **拖进 "Attach binaries"** 区域，等它传完 → **Publish release**
+
+### 之后
+
+- 下载页固定是 <https://github.com/MengzhongYiyu/PDFBatchPrint/releases/latest>
+- README 顶部已经有这个链接，别人点进去就能下
+- 以后发新版本：改版本号 → `make_portable.cmd` → 重新跑一次 Release 脚本（改 `publish-release.ps1` 顶部的 `$tag` / `$assetName`）
+
+### 想连最新便携包也进 Git 仓库（不推荐）
+
+真要的话：在 `.gitignore` 里放行它，然后 `git add -f`：
+```cmd
+echo !dist/PDF批量打印工具_便携版_v1.4.1.zip >> .gitignore
+git add -f "dist/PDF批量打印工具_便携版_v1.4.1.zip"
+git commit -m "把便携包放进仓库"
+git push
+```
+注意：GitHub 单文件上限 100MB，这个 41MB 能过；但历史会一直变大。
