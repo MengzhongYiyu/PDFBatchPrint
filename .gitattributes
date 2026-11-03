@@ -1,10 +1,18 @@
+# 统一换行符：Windows 脚本用 CRLF，其余按 LF 入库
 * text=auto
+
 *.cs text eol=crlf
 *.cmd text eol=crlf
 *.bat text eol=crlf
 *.txt text eol=crlf
+
 *.py text eol=lf
 *.md text eol=lf
+LICENSE text eol=lf
+.gitignore text eol=lf
+.gitattributes text eol=lf
+.editorconfig text eol=lf
+
 *.zip binary
 *.exe binary
 *.png binary
