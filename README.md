@@ -217,6 +217,7 @@ pdfbatch\
 ├─ HANDOFF.md             开发者交接说明：编译、代码地图、踩过的坑
 ├─ CHANGELOG.md           更新日志
 ├─ PUBLISH.md             怎么发布到 GitHub（手把手）
+├─ 发布到GitHub.cmd       双击推送（配 publish-to-github.ps1）
 └─ LICENSE                MIT
 ```
 
