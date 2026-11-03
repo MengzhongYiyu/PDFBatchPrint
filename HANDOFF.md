@@ -259,6 +259,14 @@ dist\PDF批量打印工具\PdfBatchPrint.exe   :: 跑便携版（免装 Python�
 
 `selftest.cmd` 检查：PyMuPDF / exe --help / render_pdf.py info（A3 420×297）/ 合并 2up+裁白边（4 张→2 页 A4 且右边框没被裁）/ 打印到 PDF（A3→420×297 横向）。
 
+### 网络与代理（2026-11-03 实测）
+
+- 直连 GitHub：`git push/pull` 可用；**下载慢（约 37 KB/s）**。
+- 要下载东西（如 GitHub Desktop 安装包）走家里的 NAS 代理：`192.168.31.242:7890`（HTTP，实测 2 MB/s）：
+  `curl -x http://192.168.31.242:7890 -L -o 文件 <url>`，或 `git -c http.proxy=http://192.168.31.242:7890 ...`
+- 本机 `127.0.0.1:7890` 的代理是临时的，别写进脚本。
+- 该 NAS 代理的上游会临时断（CONNECT 能建但 TLS 不通），重试即可。
+
 ### 本机特有的两个坑（HANDOFF 第 7 节之外新增）
 
 1. **从脚本/自动化环境（非交互桌面）调用 exe 打印**时，`PrintDocument.Print()` 可能抛 `Win32Exception (0x80004005): 拒绝访问`——这是执行环境的权限限制（第 7 节第 3 条的同一现象），不是程序 bug；在桌面上双击 exe 正常。自检脚本遇到这种情况只记 `SKIP`，不判失败。
