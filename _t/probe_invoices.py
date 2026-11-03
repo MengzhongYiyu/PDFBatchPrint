@@ -1,6 +1,6 @@
 
 import fitz, glob, os
-d = r'C:\Users\Administrator\Desktop\Solidworks图标'
+d = r'C:\Users\<用户名>\Desktop\Solidworks图标'
 files = sorted(glob.glob(os.path.join(d, '*.pdf')))
 for f in files:
     try:

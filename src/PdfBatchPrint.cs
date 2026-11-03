@@ -1526,7 +1526,7 @@ namespace PdfBatchPrint
             {
                 DialogResult go = MessageBox.Show(this,
                     "当前选择的打印机是：\n" + entry.Name + "\n\n它的端口是 PORTPROMPT:（本机占位），任务不会真正输出到打印机。\n" +
-                    "请改选带 \\\\服务器\\ 前缀的共享打印机（例如 \\\\Server1\\HP MFP M433 PCL 6）。\n\n仍要按当前选择继续吗？",
+                    "请改选带 \\\\服务器\\ 前缀的共享打印机（例如 \\\\打印服务器\\HP MFP M433 PCL 6）。\n\n仍要按当前选择继续吗？",
                     "打印机可能是占位端口", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                 if (go != DialogResult.OK) return;
             }

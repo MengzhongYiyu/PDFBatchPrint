@@ -8,6 +8,12 @@
 - 重新编译：双击 `build.cmd`（用系统自带 csc.exe）
 - 页面渲染脚本：`render_pdf.py`（需要 Python + PyMuPDF，见下）
 
+![主界面](screenshot.png)
+
+> 单文件 exe，绿色免安装：PDF 和图片混排、A2/A3/A4 自动纸张与横竖、发票「每页 2 张」合并裁白边、逐页打印预览。
+
+**目录**： [图形界面](#一图形界面用法推荐) · [命令行](#二命令行用法可做批处理计划任务) · [运行环境](#三运行环境) · [常见问题](#四常见问题) · [目录结构](#五目录结构) · [便携版](#六便携版拷到别的电脑上用) · [从源码构建](#七从源码构建) · [更新日志](#八更新日志) · [许可证](#九许可证)
+
 ## 一、图形界面用法（推荐）
 
 1. 双击 `PdfBatchPrint.exe`
@@ -176,12 +182,12 @@ A: 红色只是「超出可打印区、会被裁掉」的提示：如果那是�
 **Q: 打印任务显示“正在打印”但机器不动？**
 A: 先看任务卡在哪台电脑的队列里：
 - 卡在**本机**队列：「设置 → 蓝牙和设备 → 打印机和扫描仪」进队列清空，或管理员运行 `Restart-Service Spooler -Force`。
-- 卡在**共享服务器**（例如 `\\Server1\HP MFP M433 PCL 6` 显示“正在打印 / Printing, Retained”）：本机没有权限取消，
-  要到 Server1 上用管理员账号打开该打印机队列删掉卡住的任务，或在 Server1 上重启 Print Spooler 服务；
+- 卡在**共享服务器**（例如 `\\打印服务器\HP MFP M433 PCL 6` 显示“正在打印 / Printing, Retained”）：本机没有权限取消，
+  要到 打印服务器 上用管理员账号打开该打印机队列删掉卡住的任务，或在 打印服务器 上重启 Print Spooler 服务；
   卡住的任务不清掉，后面的任务会一直排在它后面不动。
 
 **Q: 打印机名怎么选？**
-A: 选带服务器前缀的共享打印机，例如 `\\Server1\HP MFP M433 PCL 6`。
+A: 选带服务器前缀的共享打印机，例如 `\\打印服务器\HP MFP M433 PCL 6`。
 本机那个不带前缀的同名打印机端口是 PORTPROMPT:（占位，打不出纸），程序会在它后面标注
 `[本机占位端口，打不出纸]`；如果当前选中的正是它，程序会自动切换到对应的共享打印机并写进日志。
 
@@ -198,13 +204,20 @@ A: 是同一个程序的便携副本（exe + render_pdf.py），双击即可运�
 
 ```
 pdfbatch\
-  PdfBatchPrint.exe      主程序
-  render_pdf.py          PDF 渲染脚本（内部调用）
-  build.cmd              一键重新编译
-  make_portable.cmd      重新生成便携版（dist 目录 + zip）
-  src\PdfBatchPrint.cs   源码（WinForms + 打印逻辑）
-  dist\                  便携版输出：PDF批量打印工具\ 与 .zip
-  README.md              本说明
+├─ PdfBatchPrint.exe      主程序（编译产物，不纳入仓库）
+├─ render_pdf.py          PDF 渲染脚本（内部调用）
+├─ src\PdfBatchPrint.cs   源码（WinForms + 打印逻辑，单文件）
+├─ build.cmd              一键重新编译（用系统自带 csc.exe）
+├─ make_portable.cmd      重新生成便携版（dist\ 目录 + zip）
+├─ selftest.cmd           一键自检（6 项，不需要真打印机）
+├─ python\                开发用 Python 3.12 + PyMuPDF + Pillow（不入库）
+├─ dist\                  便携版输出（不入库）
+├─ _t\                    开发期探针脚本，可删
+├─ README.md              本说明（使用向）
+├─ HANDOFF.md             开发者交接说明：编译、代码地图、踩过的坑
+├─ CHANGELOG.md           更新日志
+├─ PUBLISH.md             怎么发布到 GitHub（手把手）
+└─ LICENSE                MIT
 ```
 
 ## 六、便携版（拷到别的电脑上用）
@@ -215,7 +228,7 @@ pdfbatch\
 1.4.1 修复：勾「裁掉白边」合并时，零宽度的竖边框线被当成空矩形忽略，导致发票最右边的边框线和彩色边条被裁掉；
 现在手工合并内容框并外扩 1pt，边框完整保留。
 
-`dist\PDF批量打印工具_便携版_v1.4.zip`（约 41MB）里是完整可运行的目录（预览、发票合并、图片打印都已包含）：
+`dist\PDF批量打印工具_便携版_v1.4.1.zip`（约 41MB）里是完整可运行的目录（预览、发票合并、图片打印都已包含）：
 
 ```
 PDF批量打印工具\
@@ -233,3 +246,31 @@ PDF批量打印工具\
 `python\` 只服务本程序：不装进系统、不写注册表、不占 PATH。程序日志里出现
 `渲染引擎就绪: ...\python\python.exe` 就说明用的是内置环境，目标电脑不需要另装 Python。
 以后改了源码，重新跑 `build.cmd` 再跑 `make_portable.cmd` 即可刷新便携版。
+
+## 七、从源码构建
+
+需要 Windows + .NET Framework 4.x（Win8/10/11 自带）。改完 `src\PdfBatchPrint.cs` 后：
+
+```cmd
+cd /d <项目目录>
+build.cmd        :: 编译 exe（约 2 秒）
+selftest.cmd     :: 6 项自检，退出码 0 = 全过
+make_portable.cmd :: 重新生成便携版（需要项目内 python\ 或本机 DSH 运行时）
+```
+
+编译用的是系统自带的 `csc.exe`，**只支持 C# 5 语法**（别写 `$"插值"`、表达式成员等 C# 6+ 特性）。
+详细代码地图、已知坑、换机自检清单见 [HANDOFF.md](HANDOFF.md)。
+
+## 八、更新日志
+
+见 [CHANGELOG.md](CHANGELOG.md)。
+
+## 九、许可证
+
+[MIT](LICENSE) © 2026 MengzhongYiyu
+
+## 十、说明
+
+- 本工具只调用 Windows 打印子系统，不上传任何文件、不联网。
+- 「WPS 原样打印」引擎依赖本机安装的 WPS Office；不装也能用「精确渲染」引擎（需要 Python + PyMuPDF）。
+- 打印前建议先用「打印预览」或 `--print-to-file` 打一份 PDF 核对版式，避免浪费纸。

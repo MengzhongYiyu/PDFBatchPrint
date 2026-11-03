@@ -1,7 +1,7 @@
 # PDF 批量打印工具 — 项目交接说明（HANDOFF）
 
 版本：**1.4.1**（2026-11-03 归档）
-归档人：上一台机器（WINDOWS-L）的会话负责人
+归档人：上一台机器（上一台电脑）的会话负责人
 用途：把这套工具与开发状态完整搬到另一台电脑继续维护
 
 ---
@@ -47,13 +47,13 @@ pdfbatch/
 │                           # exe 自动使用「同目录 python\python.exe」，本机无需再配环境
 ├─ dist/
 │  ├─ PDF批量打印工具/      # make_portable.cmd 生成的展开目录（可删，随时重生成）
-│  └─ PDF批量打印工具_便携版_v1.4.zip   # 便携版压缩包（41MB，目标机免装 Python）
+│  └─ PDF批量打印工具_便携版_v1.4.1.zip   # 便携版压缩包（41MB，目标机免装 Python）
 ├─ _t/                      # 开发期一次性脚本和截图（探针、量尺寸、复现脚本），可删
 ├─ temp/                    # 运行时临时目录（空）
 └─ __pycache__/             # Python 缓存，可删
 ```
 
-**归档里没有放 `dist/PDF批量打印工具/`（解包后的 107MB 运行目录）**，因为同一个东西已经压在 `dist/PDF批量打印工具_便携版_v1.4.zip` 里了，需要时解压即可。
+**归档里没有放 `dist/PDF批量打印工具/`（解包后的 107MB 运行目录）**，因为同一个东西已经压在 `dist/PDF批量打印工具_便携版_v1.4.1.zip` 里了，需要时解压即可。
 
 ---
 
@@ -104,7 +104,7 @@ build.cmd
 ```cmd
 make_portable.cmd
 ```
-会：复制 exe + render_pdf.py + 文档 → 从本机 DSH 运行时拷一份 Python（含 pymupdf、Pillow）→ robocopy 到 `dist\PDF批量打印工具\` → 自检 `import pymupdf / PIL` → 压成 `dist\PDF批量打印工具_便携版_v1.4.zip`。脚本里写死了源 Python 路径（`C:\Users\Administrator\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python`），**换机器后要改这一行**。
+会：复制 exe + render_pdf.py + 文档 → 从本机 DSH 运行时拷一份 Python（含 pymupdf、Pillow）→ robocopy 到 `dist\PDF批量打印工具\` → 自检 `import pymupdf / PIL` → 压成 `dist\PDF批量打印工具_便携版_v1.4.1.zip`。脚本里写死了源 Python 路径（`C:\Users\<用户名>\.dsh\dsh-runtimes\dsh-primary-runtime\dependencies\python`），**换机器后要改这一行**。
 
 ---
 
@@ -165,8 +165,8 @@ make_portable.cmd
 | 1 | A2 图纸（594×420mm）在打印机最大 A3 时会缩到 A3 打印 | 有意为之（README 已写）；如要保真需支持 A2 纸或分块打印 |
 | 2 | 图片按自带 dpi 换算物理尺寸，低 dpi 照片会判成 A3 | 已在 README FAQ 提示手动选 A4；可考虑加「图片按纸张铺满」选项 |
 | 3 | WPS 引擎打印图片依赖 Python | 已在代码里给出明确报错；可改用渲染引擎 |
-| 4 | 现场那台 `\\Server1\HP MFP M433 PCL 6` 队列曾卡死（job 18 起一直 Printing/Retained），非本工具问题 | 需要 Server1 管理员：`Remove-PrintJob` 或 `Stop-Service Spooler`；`_t\fix_server1.ps1` + `_t\修复打印机所在电脑.cmd` 就是给 Server1 管理员用的 |
-| 5 | 本机曾出现打印机连接丢失、默认打印机被改成 `HP Universal Printing PS`（端口 FILE:），导致所有程序「打印没反应」 | 修复：`Add-Printer -ConnectionName '\\Server1\HP MFP M433 PCL 6'` 再 `SetDefaultPrinter`。工具现在也会检测「死端口」并跳过 |
+| 4 | 现场那台 `\\打印服务器\HP MFP M433 PCL 6` 队列曾卡死（job 18 起一直 Printing/Retained），非本工具问题 | 需要 打印服务器 管理员：`Remove-PrintJob` 或 `Stop-Service Spooler`；`_t\fix_print_queue.ps1` + `_t\修复打印机所在电脑.cmd` 就是给 打印服务器 管理员用的 |
+| 5 | 本机曾出现打印机连接丢失、默认打印机被改成 `HP Universal Printing PS`（端口 FILE:），导致所有程序「打印没反应」 | 修复：`Add-Printer -ConnectionName '\\打印服务器\HP MFP M433 PCL 6'` 再 `SetDefaultPrinter`。工具现在也会检测「死端口」并跳过 |
 | 6 | 预览只渲染前 80 页 | 够用，如要全量可改 `MaxPreviewPages` 常量 |
 
 ---
@@ -174,7 +174,7 @@ make_portable.cmd
 ## 9. 换到新电脑怎么接着做
 
 1. 解压归档到例如 `D:\work\`，目录形如 `PDF批量打印工具_项目归档\pdfbatch\`。
-2. **先跑通成品**：双击 `pdfbatch\PdfBatchPrint.exe`，或解压 `dist\PDF批量打印工具_便携版_v1.4.zip` 后运行里面的 exe（免装 Python）。
+2. **先跑通成品**：双击 `pdfbatch\PdfBatchPrint.exe`，或解压 `dist\PDF批量打印工具_便携版_v1.4.1.zip` 后运行里面的 exe（免装 Python）。
 3. **验证渲染链路**：
    ```cmd
    PdfBatchPrint.exe --help
@@ -201,7 +201,7 @@ make_portable.cmd
 
 ```ini
 # PdfBatchPrint 设置
-Printer=\\Server1\HP MFP M433 PCL 6
+Printer=\\打印服务器\HP MFP M433 PCL 6
 Engine=render
 Copies=1
 Duplex=simplex
@@ -240,7 +240,7 @@ FormHeight=800
 ### 本机已做的改动（相对归档原件）
 
 1. `build.cmd`：去掉 UTF-8 BOM（否则 cmd 首行报「`﻿@echo` 不是内部或外部命令」）；加「exe 正在运行就别编译」的前置检查（对应 CS0016）；`find` 改用 `%WINDIR%\System32\find.exe` 绝对路径（PATH 被 MSYS 工具污染时会找错）；全文保持 ASCII，换机器不乱码。
-2. `make_portable.cmd`：Python 源路径不再写死 `C:\Users\Administrator\...`，改为「优先 `%~dp0python`，其次 `%USERPROFILE%\.dsh\dsh-runtimes\*\dependencies\python`」，找不到才报错；补 `chcp 65001` 保证中文文件名（`使用说明.txt`）能复制；加 `setlocal`。
+2. `make_portable.cmd`：Python 源路径不再写死 `C:\Users\<用户名>\...`，改为「优先 `%~dp0python`，其次 `%USERPROFILE%\.dsh\dsh-runtimes\*\dependencies\python`」，找不到才报错；补 `chcp 65001` 保证中文文件名（`使用说明.txt`）能复制；加 `setlocal`。
 3. 新增 `python\`（开发运行时，已 gitignore）、`selftest.cmd` / `selftest.py`、`.gitignore`、`.gitattributes`。
    注意 `PdfBatchPrint.exe` 作为编译产物已 **不纳入 git**（`build.cmd` 两秒即可重建），所以 `git status` 在编译后依然干净。
 
@@ -266,6 +266,6 @@ dist\PDF批量打印工具\PdfBatchPrint.exe   :: 跑便携版（免装 Python�
 
 ### 下一步可以做的（第 8 节待办之外）
 
-- 便携包文件名还是 `_v1.4.zip`，而实际版本是 1.4.1；要改名就改 `make_portable.cmd` 里的 `OUTZIP`（连同 `使用说明.txt` 里的引用）。
+- 便携包文件名已统一为 `PDF批量打印工具_便携版_v1.4.1.zip`（原来叫 `_v1.4.zip`，与实际版本不一致），`使用说明.txt` / README 里的引用已同步。
 - `_t\` 是上一台机器的开发期脚本，留着当参考；确认没用可以删。
 - 本机没有 WPS，若要在本机回归「WPS 原样打印」引擎，需要先装 WPS Office。

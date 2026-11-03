@@ -7,9 +7,9 @@ PDF 批量打印工具 —— 使用说明
    - 「添加文件」：多选 PDF / 图片；
    - 「添加文件夹」：把这个文件夹（含子文件夹）里的 PDF 和图片全部加进来；
    - 也可以把文件 / 文件夹直接拖进窗口，或拖到 exe 图标上。
-3. 选择打印机：网络打印机请选带 \\Server1\ 前缀的那台
+3. 选择打印机：网络打印机请选带 \\打印服务器\ 前缀的那台
    （本机那个不带前缀的同名打印机端口是 PORTPROMPT:，是占位，打不出来；
-     程序会在它后面标注「[本机占位端口，打不出纸]」，并自动帮你改用 \\Server1\ 那台）。
+     程序会在它后面标注「[本机占位端口，打不出纸]」，并自动帮你改用 \\打印服务器\ 那台）。
 4. 打印设置：
    份数      每个文件打几份
    双面      单面 / 双面长边 / 双面短边
@@ -49,8 +49,8 @@ PDF 批量打印工具 —— 使用说明
 【常见问题】
 - 点了打印但打印机没动静：多半是打印队列里卡了旧任务。
   卡在本机队列 → 管理员运行 PowerShell：Restart-Service Spooler -Force，再重新点「开始打印」。
-  卡在 Server1（\\Server1\ 那台显示“正在打印 / Printing, Retained”）→ 本机取消不了，
-  要到 Server1 上用管理员账号删掉卡住的任务，或在 Server1 上重启 Print Spooler 服务。
+  卡在 打印服务器（\\打印服务器\ 那台显示“正在打印 / Printing, Retained”）→ 本机取消不了，
+  要到 打印服务器 上用管理员账号删掉卡住的任务，或在 打印服务器 上重启 Print Spooler 服务。
 - 图纸边框被裁：把「缩放」设为「适合纸张」，纸张设为「自动（按原图）」，方向设为「自动（按图纸）」。
 - A3 图缩到 A4 打、最下面被裁：1.1 版已修正排版偏移（旧版整体偏右下 4.2mm，底部丢 3mm）；
   仍嫌贴边就把「边距」调成 3mm / 5mm。想先看效果可以用「Microsoft Print to PDF」
@@ -75,7 +75,7 @@ PDF 批量打印工具 —— 使用说明
 - 窗口里双击某个文件，会用系统默认程序打开它，方便先确认图纸。
 
 【命令行 / 批处理】
-  PdfBatchPrint.exe --cli --folder "D:\图纸" --printer "\\Server1\HP MFP M433 PCL 6"
+  PdfBatchPrint.exe --cli --folder "D:\图纸" --printer "\\打印服务器\HP MFP M433 PCL 6"
   PdfBatchPrint.exe --cli --files "a.jpg;b.png;c.webp" --printer "..." --paper A4   （打图片）
   PdfBatchPrint.exe --cli --files "a.pdf;b.pdf" --printer "..." --paper A3 --dpi 300
   PdfBatchPrint.exe --cli --files "a.pdf" --printer "Microsoft Print to PDF" --print-to-file "D:\预览.pdf"
@@ -94,10 +94,10 @@ PDF 批量打印工具 —— 使用说明
 更详细的说明见 pdfbatch 目录里的 README.md。
 
 【拷到别的电脑上用（便携版，1.4 版）】
-- 便携包见桌面的 PDF批量打印工具_便携版_v1.4.zip，解压后是完整目录（含打印预览、发票合并、图片打印）。
+- 便携包见桌面的 PDF批量打印工具_便携版_v1.4.1.zip，解压后是完整目录（含打印预览、发票合并、图片打印）。
 - 整个文件夹一起拷，不要只拷 exe：PdfBatchPrint.exe、render_pdf.py、python\ 三个都在才行。
 - 目标电脑：Windows 7 SP1 及以上；需要系统自带 .NET Framework 4.x（Win10/11 默认已有，Win7 可能要装）。
-- 在目标电脑上先装好打印机驱动并添加打印机（共享打印机用 \\服务器名\打印机名，例如 \\Server1\HP MFP M433 PCL 6），
+- 在目标电脑上先装好打印机驱动并添加打印机（共享打印机用 \\服务器名\打印机名，例如 \\打印服务器\HP MFP M433 PCL 6），
   程序会把本机那个占位端口的同名打印机标成「[本机占位端口，打不出纸]」，并自动改用共享的那台。
 - python\ 是随包的精简 Python 3.12 + PyMuPDF，只服务本程序，不需要安装、不写注册表、不影响电脑上已有的 Python。
   日志里出现「渲染引擎就绪: ...\python\python.exe」就说明用的是内置环境。

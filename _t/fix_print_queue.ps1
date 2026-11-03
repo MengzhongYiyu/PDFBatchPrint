@@ -1,5 +1,5 @@
 $ErrorActionPreference = 'Stop'
-# 在 Server1 上以管理员身份运行：清空卡住的打印任务并重启打印服务
+# 在 打印服务器 上以管理员身份运行：清空卡住的打印任务并重启打印服务
 Write-Host '=== 1) 列出当前任务 ==='
 Get-PrintJob -PrinterName 'HP MFP M433 PCL 6' -ErrorAction SilentlyContinue |
   Select-Object Id,DocumentName,JobStatus,SubmittedTime | Format-Table -AutoSize

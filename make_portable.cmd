@@ -2,7 +2,7 @@
 setlocal
 chcp 65001 >nul
 cd /d "%~dp0"
-rem Rebuild portable package: dist\PDF批量打印工具\ and dist\PDF批量打印工具_便携版_v1.4.zip
+rem Rebuild portable package: dist\PDF批量打印工具\ and dist\PDF批量打印工具_便携版_v1.4.1.zip
 rem Python source: prefer the bundled .\python (dev runtime of this project),
 rem else the DSH runtime of the current user.
 
@@ -18,7 +18,7 @@ if not exist "%SRC%\python.exe" (
 )
 :src_ok
 set "DST=%~dp0dist\PDF批量打印工具"
-set "OUTZIP=%~dp0dist\PDF批量打印工具_便携版_v1.4.zip"
+set "OUTZIP=%~dp0dist\PDF批量打印工具_便携版_v1.4.1.zip"
 
 if not exist "%~dp0PdfBatchPrint.exe" (
   echo [!] run build.cmd first
